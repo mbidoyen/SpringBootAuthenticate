@@ -19,6 +19,7 @@ import java.util.Set;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -58,7 +59,7 @@ public class AuthenticateController {
             Set<Authority> authorities = new HashSet<>();
             authorities.add(authority.get());
             user.setAuthorities(authorities);
-
+            user.setEnabled(true);
             try {
                 UUID uuid = userService.save(user);
                 if (uuid != null) {
@@ -68,8 +69,11 @@ public class AuthenticateController {
                     log.error("User registration failed - save operation returned null UUID");
                     return new ResponseEntity<>(false, HttpStatus.INTERNAL_SERVER_ERROR);
                 }
+            } catch (DataIntegrityViolationException ex) {
+                log.error("Data integrity violation during user registration");
+                return new ResponseEntity<>(false, HttpStatus.CONFLICT);
             } catch (Exception e) {
-                log.error("Error occurred during user registration", e);
+                log.error("Error occurred during user registration");
                 return new ResponseEntity<>(false, HttpStatus.INTERNAL_SERVER_ERROR);
             }
         } else {

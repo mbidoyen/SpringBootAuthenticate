@@ -35,7 +35,7 @@ public class User {
     @Column(name = "USR_ID", columnDefinition = "BINARY(16)")
     private UUID id;
 
-    @Column(name = "USR_EMAIL", nullable = false)
+    @Column(name = "USR_EMAIL", nullable = false, unique = true)
     private String email;
 
     @Column(name = "USR_PASSWORD", nullable = false)

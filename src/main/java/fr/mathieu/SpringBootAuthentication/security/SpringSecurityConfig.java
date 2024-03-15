@@ -22,7 +22,7 @@ public class SpringSecurityConfig {
     @Bean
     SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         return http.authorizeHttpRequests(auth -> {
-            auth.requestMatchers("/register", "/authenticate", "authority").permitAll();
+            auth.requestMatchers("/register", "/authenticate", "/authority", "/user/**").permitAll();
             auth.anyRequest().authenticated();
 
         })

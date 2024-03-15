@@ -10,8 +10,12 @@ import org.springframework.web.bind.annotation.RestController;
 import fr.mathieu.SpringBootAuthentication.models.dtos.authorityDTO.RoleDto;
 import fr.mathieu.SpringBootAuthentication.models.entities.Authority;
 import fr.mathieu.SpringBootAuthentication.services.IAuthorityService;
+import fr.mathieu.SpringBootAuthentication.utils.LoggerUtil;
+import lombok.extern.slf4j.Slf4j;
+
 import org.springframework.web.bind.annotation.GetMapping;
 
+@Slf4j
 @RestController
 public class AuthorityController {
 
@@ -24,6 +28,13 @@ public class AuthorityController {
         Set<RoleDto> roles = authorities.stream()
                 .map(role -> new RoleDto(role.getId(), role.getRolename()))
                 .collect(Collectors.toSet());
+
+        if (roles.size() == 0) {
+            log.warn("No role has been found.");
+            return ResponseEntity.notFound().build();
+        }
+
+        LoggerUtil.logSuccess("Roles recovery successful.");
         return ResponseEntity.ok().body(roles);
     }
 
